@@ -24,6 +24,8 @@ Windows 10が動作するPCでの動作は確認済み。
 <br>
 ホワイトリスト以外のhttpの文字列が見つかった場合、元のファイル名の拡張子を「.suspicious.txt」に変えたファイルを出力する。
 <br>
+![image_01]()
+
 ## 謝　辞
 本アプリケーションでは、zipの解凍でJean-loup Gailly氏およびMark Adler氏によるzlib(zlib 1.2.12, March 27, 2022)を利用している。
 https://zlib.net/  
