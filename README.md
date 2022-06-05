@@ -40,8 +40,7 @@ https://zlib.net/
 * zutil.h
   
 ## 開発環境
-Microsoft Visual Studio Community 2017 Version 15.9.4  
-  Microsoft Visual C++ 2017
+Microsoft Visual Studio Community 2017 Version 15.9.4    Microsoft Visual C++ 2017
   
 ## 問題点・制限事項
 * 本アプリケーションは、Microsoft Officeファイルの仕様書を読んで十分理解して作られたものではない。したがって、アプリケーションとしては想定通りの動作であっても、目的を十分達成できない可能性は残される。  
