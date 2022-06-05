@@ -1,0 +1,5 @@
+http://schemas.openxmlformats.org/
+http://schemas.microsoft.com/
+http://purl.org/
+http://ns.adobe.com/
+http://www.w3.org/
