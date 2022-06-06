@@ -99,6 +99,12 @@ or
 If a string containing http that is not included in the white list is found, a file with the extension of the original filename changed to ".suspicious.txt" is output.  
 The file will output a string containing the http that was not included in the white list.  
 <br>
+<br>
+![image_05](https://github.com/Sachiel-archangel/OfficeHttpPicker/blob/main/image/image_05.png)
+![image_06](https://github.com/Sachiel-archangel/OfficeHttpPicker/blob/main/image/image_06.png)
+![image_07](https://github.com/Sachiel-archangel/OfficeHttpPicker/blob/main/image/image_07.png)
+![image_08](https://github.com/Sachiel-archangel/OfficeHttpPicker/blob/main/image/image_08.png)
+<br>
 ## Reference
 This application uses zlib (zlib 1.2.12, March 27, 2022) by Jean-loup Gailly and Mark Adler for unzipping.    
 https://zlib.net/  
