@@ -71,6 +71,7 @@ LICENSEファイルを参照（一般的なMITライセンス）。
 なお、当然ながらzlibの部分の著作権に関してはJean-loup Gailly氏およびMark Adler氏に帰属します。  
 <br>
 
+***
 This is a program that Zip-decompresses files such as .docx of Office 2007 or later format and extracts character strings including "http" in readable text.  
 ## Purpose
 Among Office documents, there is a method to exploit the function to automatically refer to an external URL in a file in Office 2007 or later format.  
