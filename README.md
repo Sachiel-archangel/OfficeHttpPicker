@@ -65,8 +65,7 @@ Microsoft Visual Studio Community 2017 Version 15.9.4    Microsoft Visual C++ 20
 * Linux、Unix版のコードが無い。ただし、現状のコードでWindows依存なのはファイル操作、ファイルパス名操作、メモリの確保(VirtualAlloc)程度なので、そのあたりを乗せ換えれば対応できると思われる。この場合、文字コード(Unicode、UTF-8)対応に注意が必要。
 * 今後のメンテナンスについては未定。
 
-## 著作権・ライセンス
-
+## 著作権・ライセンス  
 LICENSEファイルを参照（一般的なMITライセンス）。  
 流用等に制限はありませんが、著作権を放棄したものではありません。  
 なお、当然ながらzlibの部分の著作権に関してはJean-loup Gailly氏およびMark Adler氏に帰属します。  
