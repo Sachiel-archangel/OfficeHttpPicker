@@ -18,7 +18,7 @@ Windows 10が動作するPCでの動作は確認済み。
 <br>
 `officehttppicker.exe (ターゲットファイル) (ホワイトリストファイル)`  
 <br>
-または
+または  
 <br>
 `officehttppicker.exe (ターゲットファイル)`  
 （ホワイトリストファイルを省略した場合、同一フォルダの「whitelist.txt」を参照する。）  
@@ -89,7 +89,7 @@ You can do this by navigating to the folder where the application is located at 
 <br>
 `officehttppicker.exe (target file) (whitelist file)`  
 <br>
-or
+or  
 <br>
 `officehttppicker.exe (target file)`  
 (If the whitelist file is omitted, "whitelist.txt" in the same folder is referenced.)  
