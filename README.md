@@ -66,6 +66,7 @@ Microsoft Visual Studio Community 2017 Version 15.9.4    Microsoft Visual C++ 20
 * 今後のメンテナンスについては未定。
 
 ## 著作権・ライセンス
+
 LICENSEファイルを参照（一般的なMITライセンス）。  
 流用等に制限はありませんが、著作権を放棄したものではありません。  
 なお、当然ながらzlibの部分の著作権に関してはJean-loup Gailly氏およびMark Adler氏に帰属します。  
