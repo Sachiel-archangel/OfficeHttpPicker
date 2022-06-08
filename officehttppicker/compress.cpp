@@ -2,6 +2,7 @@
 #include "compress.h"
 #include "zlib.h"
 #include "ZipHeader.h"
+#include "stdio.h"
 
 compress::compress()
 {
@@ -32,6 +33,10 @@ DataContainer *  compress::DecompressZip(DataContainer *pData)
 	if (pDecompressedData == NULL)
 		return NULL;
 
+	// メモリ利用効率化目的でRealloc発生を抑制するための初期領域確保
+	pDecompressedData->CreateDataObject(2 * 1024 * 1024);
+
+
 	for (;;) {
 		// ブレーク判定
 		if (dwOffset + sizeof(ZipHeader) >= (DWORD)pData->GetCurrentDataSize()) {
@@ -44,6 +49,7 @@ DataContainer *  compress::DecompressZip(DataContainer *pData)
 
 		// ZIPヘッダ情報の展開
 		if (objZipHeader.ExpandZipHeader((char *)pData->GetDataPointer() + dwOffset) < 0){
+			printf("ExpandZipHeader error occur.\r\n");
 			break;
 		}
 
@@ -57,6 +63,7 @@ DataContainer *  compress::DecompressZip(DataContainer *pData)
 
 			// 解凍データ受領領域確保
 			if (objReceive.CreateDataObject(objZipHeader.GetDecompSize()) != DATACONT_SUCCESS) {
+				printf("Memory allocation error in DecompressZip function.\r\n");
 				break;
 			}
 
@@ -91,6 +98,7 @@ DataContainer *  compress::DecompressZip(DataContainer *pData)
 			if (pDecompressedData->ReallocDataObject(iTotalSize) != DATACONT_SUCCESS) {
 				delete pDecompressedData;
 				pDecompressedData = NULL;
+				printf("Memory allocation(realloc) error in DecompressZip function.\r\n");
 				break;
 			}
 			memcpy((char *)pDecompressedData->GetDataPointer() + ipDecompressedDataOffset, objReceive.GetDataPointer(), objZipHeader.GetDecompSize());
@@ -105,6 +113,7 @@ DataContainer *  compress::DecompressZip(DataContainer *pData)
 
 	// 末尾にNULL文字を入れておく。
 	if(pDecompressedData->ReallocDataObject(iTotalSize + 1) != DATACONT_SUCCESS) {
+		printf("Memory allocation(realloc) error in DecompressZip function.\r\n");
 		delete pDecompressedData;
 		pDecompressedData = NULL;
 	}

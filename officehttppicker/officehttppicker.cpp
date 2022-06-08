@@ -27,8 +27,63 @@ void DestroyFifo(Fifo *pFifo)
 	return;
 }
 
+char* StrSearch(char *pDataPos, const char *strSearch, int iSize)
+{
+	int i;
+	char *pRet = NULL;
+	char *strAntiSearch = NULL;
+	int iHitFlag = 0;
+	int iSearchOffset = 0;
+	int iStrSearchLen = 0;
+	DataContainer objstrAntiSearch;
 
-Fifo* PickupHttp(DataContainer *pData)
+	// strSearchが大文字なら小文字、小文字なら大文字と逆になる配列を作る。
+	iStrSearchLen = strlen(strSearch);
+	objstrAntiSearch.CreateDataObject(iStrSearchLen + 1);
+	strAntiSearch = (char *)objstrAntiSearch.GetDataPointer();
+	
+	for (i = 0; i < iStrSearchLen; i++) {
+		if (strSearch[i] >= 'A' && strSearch[i] <= 'Z')
+		{
+			strAntiSearch[i] = strSearch[i] + 0x20;
+		}
+		else if (strSearch[i] >= 'a' && strSearch[i] <= 'z') {
+			strAntiSearch[i] = strSearch[i] - 0x20;
+
+		}
+		else
+		{
+			strAntiSearch[i] = strSearch[i];
+		}
+	}
+
+
+	for (i = 0; i < iSize; i++)
+	{
+		if (pDataPos[i] == strSearch[iSearchOffset] || pDataPos[i] == strAntiSearch[iSearchOffset]) {
+			if (iSearchOffset == 0) {
+				pRet = &(pDataPos[i]);
+			}
+			iHitFlag = 1;
+			iSearchOffset++;
+			if (strSearch[iSearchOffset] == '\0') {
+				break;
+			}
+		}
+		else if (iHitFlag == 1) {
+			iHitFlag = 0;
+			iSearchOffset = 0;
+			pRet = NULL;
+		}
+	}
+
+	objstrAntiSearch.DeleteDataObject();
+
+	return pRet;
+}
+
+
+Fifo* PickupHttp(DataContainer *pData, const char *strKeyWord)
 {
 	Fifo* objStart = NULL;
 	Fifo* objCurrent = NULL;
@@ -53,14 +108,15 @@ Fifo* PickupHttp(DataContainer *pData)
 			// 暫定
 			// 後で、バッファサイズをパラメータとしてその末尾まで検索するような処理を作り直すことを考慮。
 			// (不測のNULL文字対策)
-			pHttpPos = StrStrIA(pDataPos, "http");
+			pHttpPos = StrSearch(pDataPos, strKeyWord, pData->GetCurrentDataSize() - (pDataPos - (char *)pData->GetDataPointer()));
 
-			if (pHttpPos == NULL)
+			if (pHttpPos == NULL) {
 				break;
+			}
 
 			iLenCount = 0;
 			for (;;) {
-				if (pHttpPos[iLenCount] == '\"' || pHttpPos[iLenCount] == '>' || pHttpPos[iLenCount] == ' ')
+				if (pHttpPos[iLenCount] == '\"' || pHttpPos[iLenCount] == '>' || pHttpPos[iLenCount] == ' ' || pHttpPos[iLenCount] == '\0')
 					break;
 				iLenCount++;
 			}
@@ -68,11 +124,13 @@ Fifo* PickupHttp(DataContainer *pData)
 			// 見つかった文字列を格納
 			pWorkDataCont = new DataContainer();
 			if (pWorkDataCont == NULL) {
+				printf("Memory allocation error(new DataContainer) in PickupHttp function\r\n");
 				throw;
 			}
 
 			if (pWorkDataCont->CreateDataObject(iLenCount + 1) != DATACONT_SUCCESS) {
 				delete pWorkDataCont;
+				printf("Memory allocation error(CreateDataObject) in PickupHttp function\r\n");
 				throw;
 			}
 
@@ -82,6 +140,7 @@ Fifo* PickupHttp(DataContainer *pData)
 			// Fifoキューオブジェクトを作成して設定。
 			pWorkFifo = new Fifo;
 			if (pWorkFifo == NULL) {
+				printf("Memory allocation error(new Fifo) in PickupHttp function\r\n");
 				throw;
 			}
 
@@ -401,6 +460,7 @@ int wmain(int argc, wchar_t *argv[])
 	DataContainer *OfficeFileData = NULL;
 	DataContainer *DecompressedData = NULL;
 	Fifo* pHttpDataFifo = NULL;
+	Fifo* pMhtmlDataFifo = NULL;
 	Fifo* pOutputFifo = NULL;
 
 	try {
@@ -468,8 +528,20 @@ int wmain(int argc, wchar_t *argv[])
 			return 0;
 		}
 
-		// 「http:」の文字列を抽出
-		pHttpDataFifo = PickupHttp(DecompressedData);
+		// 「http」の文字列を抽出
+		// 「https」もヒットさせるように、「http」とした。
+		// 誤検知が多いならば、「http:」と「https:」をそれぞれ呼ぶよう修正する。
+		pHttpDataFifo = PickupHttp(DecompressedData, "http");
+
+		// 「mhtml」の文字列を抽出
+		pMhtmlDataFifo = PickupHttp(DecompressedData, "mhtml:");
+
+		// pMhtmlDataFifoの出力もpHttpDataFifoに結合してしまう。
+		// 開放も、pHttpDataFifoの開放時に道連れになる。
+		if (pMhtmlDataFifo) {
+			pHttpDataFifo->Append(pMhtmlDataFifo);
+			pMhtmlDataFifo = NULL;
+		}
 
 		if (pHttpDataFifo != NULL) {
 			// ホワイトリスト対象を削除
